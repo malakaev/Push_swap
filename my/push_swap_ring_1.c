@@ -239,7 +239,7 @@ void	ft_argv_to_array(t_global *glb, char **argv) //1.3 Поместить в д
 	glb->max = glb->arr_sort[glb->ttl_size - 1];
 	glb->mid = glb->arr_sort[glb->ttl_size/2];
 
-	//распечатка sorted array > УДАЛИТЬ
+	/*распечатка sorted array > УДАЛИТЬ
 	printf("Отсортированный массив \n");
 	i = 0;
 	while(i < glb->ttl_size)
@@ -252,7 +252,7 @@ void	ft_argv_to_array(t_global *glb, char **argv) //1.3 Поместить в д
 	printf("mid %d\n", glb->mid);
 	printf("max %d\n", glb->max);
 
-	//
+	*/
 
 }
 
@@ -364,15 +364,15 @@ void	ft_rrr(t_global *glb)
 void	ft_sort_final(t_global *glb)
 {
 	while (glb->head_a->el != glb->min)
-			ft_ra(glb);
+			ft_ra(glb);// или rra добавить условия оптимального варианта
 }
 
 //ПУШ из Б в А
 void	ft_sort_push(t_stack *to_push, t_stack *place, t_global *glb)
 {
 
-	printf("\npushing to A to_push->el = %d\n", to_push->el);
-	printf("place->el = %d\n", place->el);
+	// printf("\npushing to A to_push->el = %d\n", to_push->el);
+	// printf("place->el = %d\n", place->el);
 	if (to_push->var == 0)
 	{
 		while (glb->head_b != to_push && glb->head_a != place)
@@ -459,10 +459,10 @@ void	ft_scoring(t_global *glb)
 		sc_sum[2] = s.b2 + s.a1;
 
 		//TO DEL
-		printf("\n\ncur_b-el = %d, b1 = %d, b2 = %d, a1 = %d, a2 = %d\n", cur_b->el, s.b1, s.b2, s.a1, s.a2);
-		i = -1;
-		while (++i < 4)
-			printf("\ni = %d, sc_sum = %d", i, sc_sum[i]);
+		// printf("\n\ncur_b-el = %d, b1 = %d, b2 = %d, a1 = %d, a2 = %d\n", cur_b->el, s.b1, s.b2, s.a1, s.a2);
+		// i = -1;
+		// while (++i < 4)
+		// 	printf("\ni = %d, sc_sum = %d", i, sc_sum[i]);
 
 		//находим минимальный score и вариант для сортировки
 		i = 1;
@@ -480,7 +480,7 @@ void	ft_scoring(t_global *glb)
 			i++;
 		}
 
-		printf("\nsc_b1 = %d\n", s.b1);
+		//printf("\nsc_b1 = %d\n", s.b1);
 		//Если score == 0 то нет смысла дальше делать скоринг
 		if (cur_b->score == 0)
 		{
@@ -504,8 +504,8 @@ void	ft_scoring(t_global *glb)
 		cur_b = cur_b->nxt;
 		j++;
 	}
-	listprint(glb->head_a);
-	listprint(glb->head_b);
+	//listprint(glb->head_a);
+	//listprint(glb->head_b);
 
 	//пуш узла из Б в А
 	ft_sort_push(to_push, place, glb);
@@ -516,32 +516,36 @@ void	ft_scoring(t_global *glb)
 void	ft_stack_sort(t_global *glb)
 {
 	t_stack	tmp;
+	int		flag = 0;
 
 	//если ttl_size < 4 то делать pb не имеет смысла
 	//pb всех эл-в из А в B, кроме max и min
 	glb->size_b = 0;
 	glb->head_b = NULL;
 
-	while (glb->size_a > 2)
-		if (glb->head_a->el != glb->min && glb->head_a->el != glb->max) // && glb->head_a->el != glb->mid)
-			if (glb->head_a->el < glb->mid)
+	while (glb->size_a > 3)
+		if (glb->head_a->el != glb->min && glb->head_a->el != glb->max && glb->head_a->el != glb->mid)
+			if (glb->head_a->el < glb->mid && flag == 1)
 			{
 				ft_pb(glb);
-				//ft_rb(glb); //добавить условие что rb делать только если эл-т > mid уже попал в стек B
+				ft_rb(glb); //добавить условие что rb делать только если эл-т > mid уже попал в стек B
 			}
 			else
+			{
 				ft_pb(glb);
+				flag = 1;
+			}
 		else
 			ft_ra(glb);
-	printf("Рез-т перед скорингом\n");
-	listprint(glb->head_a);
-	listprint(glb->head_b);
+	//printf("Рез-т перед скорингом\n");
+	//listprint(glb->head_a);
+	//listprint(glb->head_b);
 	//скоринг эл-в стека B
 	while (glb->size_b > 0)
 		ft_scoring(glb);
-	printf("\nПосле скоринга\n");
-	listprint(glb->head_a);
-	listprint(glb->head_b);
+	//printf("\nПосле скоринга\n");
+	//listprint(glb->head_a);
+	//listprint(glb->head_b);
 }
 /**/
 
@@ -561,10 +565,10 @@ int	main(int argc, char **argv)
 	//1.3 Поместить в другой массив для анализа? или в список
 	ft_argv_to_array(glb, argv);
 
-	printf("Начало инициализации стека\n");
+	//printf("Начало инициализации стека\n");
 	glb->head_a = ft_stk_init(glb->arr_argv[0]); //инициализация стека А создание корневого элемента - узла
 	glb->tail_a = glb->head_a; //на случай если 1 арг-т, возможно не нужно
-	printf("инициализация стека ОК\n");
+	//printf("инициализация стека ОК\n");
 
 	// копирование эл-в в стек А
 	glb->cur_a = glb->head_a;
@@ -578,11 +582,14 @@ int	main(int argc, char **argv)
 
 
 
-	printf("копирование эл-в в стек А ОК\n");
-	listprint(glb->head_a); //распечатка элементов списка (стека А) - УДАЛИТЬ
-	printf("Конец распечатки стека\n");
+	// printf("копирование эл-в в стек А ОК\n");
+	// listprint(glb->head_a); //распечатка элементов списка (стека А) - УДАЛИТЬ
+	// printf("Конец распечатки стека\n");
 	//функция работы со стеками
 	ft_stack_sort(glb);
+
+	listprint(glb->head_a);
+	listprint(glb->head_b);
 
 	return (0);
 }
