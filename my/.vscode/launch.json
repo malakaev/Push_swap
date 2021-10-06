@@ -9,7 +9,7 @@
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "${workspaceFolder}/a.out",
-			"args": ["5", "2", "4", "1", "3"],
+			"args": ["7", "3", "2", "5", "1"],
 			"stopAtEntry": true,
 			"cwd": "${workspaceFolder}",
 			"environment": [ { "name": "squid", "value": "clam" } ],

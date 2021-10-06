@@ -25,10 +25,6 @@ typedef struct s_stack
 	struct s_stack	*prv;
 	struct s_stack	*nxt;
 	int				el;
-	int				sc_a1;
-	int				sc_a2;
-	int				sc_b1;
-	int				sc_b2;
 	int				score;
 	int				var;
 }					t_stack;
@@ -258,6 +254,24 @@ void	ft_argv_to_array(t_global *glb, char **argv) //1.3 Поместить в д
 
 /* ОПЕРАЦИИ СО СТЕКОМ */
 
+void	ft_sa(t_global *glb)
+{
+	t_stack	*tmp;
+
+	if (glb->size_a < 2)
+		return ;
+
+	tmp = glb->head_a->nxt;
+	tmp->prv = glb->tail_a;
+	glb->head_a->prv = tmp;
+	glb->head_a->nxt = tmp->nxt;
+	tmp->nxt->prv = glb->head_a;
+	tmp->nxt = glb->head_a;
+	glb->head_a = tmp;
+	glb->tail_a->nxt = glb->head_a;
+	write(1, "sa\n", 3);
+}
+
 void	ft_pb(t_global *glb)
 {
 	t_stack	*tmp;
@@ -363,8 +377,33 @@ void	ft_rrr(t_global *glb)
 
 void	ft_sort_final(t_global *glb)
 {
-	while (glb->head_a->el != glb->min)
-			ft_ra(glb);// или rra добавить условия оптимального варианта
+	int	i;
+	t_stack *tmp;
+
+	i = 0;
+	tmp = glb->head_a;
+	while (tmp->el != glb->min)
+		{
+			tmp = tmp->nxt;
+			i++;
+		}
+	if (i > (glb->size_a - i))
+		while (glb->head_a->el != glb->min)
+			ft_rra(glb);
+	else
+		while (glb->head_a->el != glb->min)
+			ft_ra(glb);
+}
+//Предсортировка стека А в котором осталось 3 узла
+void	ft_predsort_a(t_global *glb)
+{
+	t_stack	*tmp;
+
+	tmp = glb->head_a;
+	while (tmp->el != glb->max)
+		tmp = tmp->nxt;
+	if (tmp->nxt->el == glb->mid)
+		ft_sa(glb);
 }
 
 //ПУШ из Б в А
@@ -509,8 +548,7 @@ void	ft_scoring(t_global *glb)
 
 	//пуш узла из Б в А
 	ft_sort_push(to_push, place, glb);
-	//Добавить финальную прокрутку стека А для законченной сортировки
-	ft_sort_final(glb);
+
 }
 
 void	ft_stack_sort(t_global *glb)
@@ -525,24 +563,28 @@ void	ft_stack_sort(t_global *glb)
 
 	while (glb->size_a > 3)
 		if (glb->head_a->el != glb->min && glb->head_a->el != glb->max && glb->head_a->el != glb->mid)
-			if (glb->head_a->el < glb->mid && flag == 1)
+			if (glb->head_a->el < glb->mid && flag == 1) //&& glb->size_b > 2)
 			{
 				ft_pb(glb);
-				ft_rb(glb); //добавить условие что rb делать только если эл-т > mid уже попал в стек B
+				ft_rb(glb);
 			}
 			else
 			{
 				ft_pb(glb);
-				flag = 1;
+				flag = 1; //условие чтобы rb делать только если эл-т > mid уже попал в стек B
 			}
 		else
 			ft_ra(glb);
+	ft_predsort_a(glb);
 	//printf("Рез-т перед скорингом\n");
 	//listprint(glb->head_a);
 	//listprint(glb->head_b);
 	//скоринг эл-в стека B
 	while (glb->size_b > 0)
 		ft_scoring(glb);
+	//финальная прокрутка стека А для законченной сортировки
+	ft_sort_final(glb);
+
 	//printf("\nПосле скоринга\n");
 	//listprint(glb->head_a);
 	//listprint(glb->head_b);
@@ -588,8 +630,8 @@ int	main(int argc, char **argv)
 	//функция работы со стеками
 	ft_stack_sort(glb);
 
-	listprint(glb->head_a);
-	listprint(glb->head_b);
+	// listprint(glb->head_a);
+	// listprint(glb->head_b);
 
 	return (0);
 }
