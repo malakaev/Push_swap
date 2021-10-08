@@ -1,6 +1,6 @@
 #include <stdio.h> //for printf
 #include <unistd.h> //for write, read (ssize_t read(int fildes, void *buf, size_t nbyte);)
-#include <stdlib.h> //for malloc, free
+#include <stdlib.h> //for malloc, free, exit
 #include <fcntl.h> //for open
 #include <limits.h> //for open
 //#include "push_swap.h"
@@ -25,12 +25,11 @@ typedef struct s_global //структура для хранения общих 
 	int		size_a;
 	int		size_b;
 	int		ttl_size;
-	long		max;
-	long		min;
-	long		mid;
+	long	max;
+	long	min;
+	long	mid;
 	long	*arr_argv; //массив значений полученный из аргументов (из argv)
 	long	*arr_sort; //отсортированный массив значений
-
 }			t_global;
 
 typedef struct s_score
@@ -41,22 +40,12 @@ typedef struct s_score
 	int				b2;
 }					t_score;
 
-void	*ft_malloc(int n)
-{
-	return (NULL);
-}
-
 void	ft_exit (int code, t_global *glb)
 {
 	t_stack	*tmp;
 	t_stack	*cur;
 
-	// if (code == 1 || code == 4)
-	// {
-	// 	write(1, "Error\n", 6);
-	// 	exit (1);
-	// }
-	if (code == 5 || code == 2)
+	if (code != 0)
 	{
 		cur = glb->tail_a;
 		while (cur != NULL && cur != glb->head_a)
@@ -71,9 +60,9 @@ void	ft_exit (int code, t_global *glb)
 		free(glb->arr_argv);
 		free(glb);
 		write(1, "Error\n", 6);
-		exit (5);
+		exit (EXIT_FAILURE);
 	}
-	exit (0);
+	exit (EXIT_SUCCESS);
 }
 
 long	ft_atoi(const char *s, t_global *glb)
@@ -357,7 +346,7 @@ void	ft_predsort_a(t_global *glb)
 }
 
 //ПУШ из Б в А
-void	ft_sort_push(t_stack *to_push, t_stack *place, t_global *glb)
+void	ft_sort_push_var03(t_stack *to_push, t_stack *place, t_global *glb)
 {
 	if (to_push->var == 0)
 	{
@@ -368,6 +357,21 @@ void	ft_sort_push(t_stack *to_push, t_stack *place, t_global *glb)
 		while (glb->head_a != place)
 			ft_ra(glb);
 	}
+	if (to_push->var == 3)
+	{
+		while (glb->head_b != to_push && glb->head_a != place)
+			ft_rrr(glb);
+		while (glb->head_b != to_push)
+			ft_rrb(glb);
+		while (glb->head_a != place)
+			ft_rra(glb);
+	}
+}
+
+void	ft_sort_push(t_stack *to_push, t_stack *place, t_global *glb)
+{
+	if (to_push->var == 0)
+		ft_sort_push_var03(to_push, place, glb);
 	if (to_push->var == 1)
 	{
 		while (glb->head_b != to_push)
@@ -383,77 +387,84 @@ void	ft_sort_push(t_stack *to_push, t_stack *place, t_global *glb)
 			ft_ra(glb);
 	}
 	if (to_push->var == 3)
-	{
-		while (glb->head_b != to_push && glb->head_a != place)
-			ft_rrr(glb);
-		while (glb->head_b != to_push)
-			ft_rrb(glb);
-		while (glb->head_a != place)
-			ft_rra(glb);
-	}
+		ft_sort_push_var03(to_push, place, glb);
 	ft_pa(glb);
 }
 
 //СКОРИНГ эл-в стека B если size_b > 1
-void	ft_scoring(t_global *glb)
+
+void	ft_score_part2(t_stack *cur_b, int sc_sum[])
+{
+	int	i;
+	int	min;
+	//int	sc_sum[4];
+
+	i = 1;
+	min = sc_sum[0]; //находим минимальный score и вариант для сортировки
+	cur_b->var = 0;
+	cur_b->score = min;
+	while (i < 4)
+	{
+		if (min > sc_sum[i])
+		{
+			min = sc_sum[i];
+			cur_b->var = i;
+			cur_b->score = min;
+		}
+		i++;
+	}
+}
+
+t_stack	*ft_score_part1(t_stack *cur_b, t_global *glb, t_score s)
+{
+	t_stack	*cur_a;
+	int		sc_sum[4];
+
+	s.b2 = glb->size_b - s.b1;
+	cur_a = glb->head_a;
+	s.a1 = 0;
+	while ((cur_a != glb->head_a || s.a1 == 0) &&
+	(cur_b->el > cur_a->el || cur_b->el < cur_a->prv->el))//ДОБавить условие если b < a
+	{
+		s.a1++;
+		cur_a = cur_a->nxt;
+	}
+	s.a2 = glb->size_a - s.a1;
+	if (s.b1 > s.a1) //итоговый score для элемента
+		sc_sum[0] = s.b1;
+	else
+		sc_sum[0] = s.a1;
+	if (s.b2 > s.a2)
+		sc_sum[3] = s.b2;
+	else
+		sc_sum[3] = s.a2;
+	sc_sum[1] = s.b1 + s.a2;
+	sc_sum[2] = s.b2 + s.a1;
+	ft_score_part2(cur_b, sc_sum);
+	return (cur_a);
+}
+
+void	ft_scoring_main(t_global *glb)
 {
 	t_stack	*cur_a;
 	t_stack	*cur_b;
 	t_stack	*to_push;
 	t_stack	*place;
-	int		sc_sum[4];
-	int		min;
 	int		min_score;
-	int		i;
-	int		j;
 	t_score	s;
 
 	cur_b = glb->head_b;
-	j = 0;
-	while (cur_b != glb->head_b || j == 0)
+	s.b1 = 0;
+	while (cur_b != glb->head_b || s.b1 == 0)
 	{
-		s.b1 = j;
-		s.b2 = glb->size_b - s.b1;
-		cur_a = glb->head_a;
-		s.a1 = 0;
-		while ((cur_a != glb->head_a || s.a1 == 0) && (cur_b->el > cur_a->el || cur_b->el < cur_a->prv->el))//ДОБавить условие если b < a
-		{
-			s.a1++;
-			cur_a = cur_a->nxt;
-		}
-		s.a2 = glb->size_a - s.a1;
-		if (s.b1 > s.a1) //итоговый score для элемента
-			sc_sum[0] = s.b1;
-		else
-			sc_sum[0] = s.a1;
-
-		if (s.b2 > s.a2)
-			sc_sum[3] = s.b2;
-		else
-			sc_sum[3] = s.a2;
-		sc_sum[1] = s.b1 + s.a2;
-		sc_sum[2] = s.b2 + s.a1;
-		i = 1;
-		min = sc_sum[0]; //находим минимальный score и вариант для сортировки
-		cur_b->var = 0;
-		cur_b->score = min;
-		while (i < 4)
-		{
-			if (min > sc_sum[i])
-			{
-				min = sc_sum[i];
-				cur_b->var = i;
-				cur_b->score = min;
-			}
-			i++;
-		}
+		cur_a = ft_score_part1(cur_b, glb, s);
 		if (cur_b->score == 0) //Если score == 0 то нет смысла дальше делать скоринг
 		{
 			to_push = cur_b;
 			place = cur_a;
 			break;
 		}
-		if (j == 0) //поиск узла с минимальным score
+		if (s.b1 == 0) //поиск узла с минимальным score
 		{
 			min_score = cur_b->score;
 			to_push = cur_b;
@@ -466,7 +477,7 @@ void	ft_scoring(t_global *glb)
 			place = cur_a;
 		}
 		cur_b = cur_b->nxt;
-		j++;
+		s.b1++;
 	}
 	ft_sort_push(to_push, place, glb);
 }
@@ -494,7 +505,7 @@ void	ft_stack_sort(t_global *glb)
 			ft_ra(glb);
 	ft_predsort_a(glb);
 	while (glb->size_b > 0) //скоринг эл-в стека B
-		ft_scoring(glb);
+		ft_scoring_main(glb);
 	ft_sort_final(glb); //финальная прокрутка стека А для законченной сортировки
 }
 
