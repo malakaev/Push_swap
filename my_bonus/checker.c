@@ -6,7 +6,7 @@
 /*   By: kgolda <kgolda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 18:01:24 by kgolda            #+#    #+#             */
-/*   Updated: 2021/10/10 20:24:18 by kgolda           ###   ########.fr       */
+/*   Updated: 2021/10/11 20:11:13 by kgolda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	main(int argc, char **argv)
 	glb->ttl_size = argc - 1;
 	glb->size_a = glb->ttl_size;
 	ft_argv_to_array(glb, argv);
-	glb->head_a = ft_stk_init(glb->arr_argv[0], glb);
+	ft_stk_init(glb->arr_argv[0], glb);
 	glb->cur_a = glb->head_a;
 	i = 1;
 	while (i < glb->ttl_size)
@@ -52,5 +52,5 @@ int	main(int argc, char **argv)
 	}
 	ftb_pars_commands(glb);
 	ftb_check_sort_stack(glb);
-	ft_exit_OK(0, glb);
+	ft_exit_ok(0, glb);
 }

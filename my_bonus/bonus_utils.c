@@ -6,7 +6,7 @@
 /*   By: kgolda <kgolda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 18:01:24 by kgolda            #+#    #+#             */
-/*   Updated: 2021/10/10 20:20:53 by kgolda           ###   ########.fr       */
+/*   Updated: 2021/10/11 21:09:28 by kgolda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,19 +21,16 @@ void	ftb_check_sort_stack(t_global *glb)
 	while (tmp != glb->tail_a)
 	{
 		if (tmp->el > tmp->nxt->el)
-			ft_exit_OK(4, glb);
+			ft_exit_ok(4, glb);
 		tmp = tmp->nxt;
 	}
 	if (glb->size_b == 0)
-		ft_exit_OK(0, glb);
-	ft_exit_OK(4, glb);
+		ft_exit_ok(0, glb);
+	ft_exit_ok(4, glb);
 }
 
 void	ftb_compare(char *line, t_global *glb, size_t len)
 {
-	// int	len;
-	// printf("len = %zu %s\n", len, line);
-	// len = ft_strlen(line);
 	if (!ft_strncmp(line, "sa", len) && len == 2)
 		ftb_sa(glb);
 	else if (!ft_strncmp(line, "sb", len) && len == 2)
@@ -57,8 +54,7 @@ void	ftb_compare(char *line, t_global *glb, size_t len)
 	else if (!ft_strncmp(line, "rrr", len) && len == 3)
 		ft_rrr(glb);
 	else
-		ft_exit(1, glb); //free line?
-
+		ft_exit(1, glb);
 }
 
 void	ftb_pars_commands(t_global *glb)
@@ -68,23 +64,15 @@ void	ftb_pars_commands(t_global *glb)
 
 	line = NULL;
 	gnl = get_next_line(0, &line);
-	while (gnl > 0)		//correct input
+	while (gnl > 0)
 	{
-		//res = get_next_line(fd, &line);
-		// printf("gnl = %d %s", gnl, line);
-		// printf("\n");
-		ftb_compare(line, glb, ft_strlen(line)); //сравниваем получ-ю строку с командами sa, sb, ss, ra, rb, rr, rra, rrb, rrr
+		ftb_compare(line, glb, ft_strlen(line));
 		free(line);
 		line = NULL;
 		gnl = get_next_line(0, &line);
 	}
 	if (gnl == 0)
-	{
-		// printf("gnl = %d\n", gnl);
-		// printf("line =%s\n", line);
-		// printf("%d", *line);
 		free(line);
-	}
 	if (gnl == -1)
 		ft_exit(4, glb);
 }

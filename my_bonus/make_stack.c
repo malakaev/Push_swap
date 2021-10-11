@@ -6,7 +6,7 @@
 /*   By: kgolda <kgolda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 18:10:34 by kgolda            #+#    #+#             */
-/*   Updated: 2021/10/09 20:17:45 by kgolda           ###   ########.fr       */
+/*   Updated: 2021/10/11 20:39:58 by kgolda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ t_stack	*ft_stk_add_el(t_stack *stk_cur, int data, t_global *glb)
 	return (new);
 }
 
-t_stack	*ft_stk_init(int data, t_global *glb)
+void	ft_stk_init(int data, t_global *glb)
 {
 	t_stack	*stk_init;
 
@@ -40,5 +40,6 @@ t_stack	*ft_stk_init(int data, t_global *glb)
 	stk_init->el = data;
 	stk_init->nxt = stk_init;
 	stk_init->prv = stk_init;
-	return (stk_init);
+	glb->head_a = stk_init;
+	glb->tail_a = glb->head_a;
 }

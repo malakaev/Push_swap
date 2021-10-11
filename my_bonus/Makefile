@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: kgolda <kgolda@student.42.fr>              +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2021/10/11 21:15:13 by kgolda            #+#    #+#              #
+#    Updated: 2021/10/11 21:15:29 by kgolda           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME = push_swap
 NAME_BONUS = checker
 
@@ -15,7 +27,8 @@ SRCS_BONUS = checker.c\
 		ft_exit.c\
 		conv_check.c\
 		make_stack.c\
-		bonus_pa_pb_sa_sb_ss.c\
+		bonus_sa_sb_ss.c\
+		bonus_pa_pb.c\
 		ra_rra_rb_rrb.c\
 		rr_rrr.c\
 		scoring.c\
@@ -24,34 +37,25 @@ SRCS_BONUS = checker.c\
 		get_next_line.c\
 		ft_strncmp.c
 
-
 OBJS = ${SRCS:.c=.o}
 OBJS_BONUS = ${SRCS_BONUS:.c=.o}
 
 HEADER = push_swap.h
-# HEADER_2 = get_next_line.h
 
 CC = gcc
 
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -g -Wall -Werror -Wextra
 
 RM = rm -f
 
 ${NAME}: ${OBJS} $(HEADER)
 	$(CC) ${OBJS} -o ${NAME}
 
-${NAME_BONUS}: ${SRCS_BONUS} ${OBJS_BONUS} $(HEADER) #$(HEADER_2)
+${NAME_BONUS}: ${SRCS_BONUS} ${OBJS_BONUS} $(HEADER)
 	$(CC) ${OBJS_BONUS} -o ${NAME_BONUS}
-
-# %.o: %.c
-# 	$(CC) $(CFLAGS) $< $(HEADER) -c
-
-# %.o: %.c
-# 	$(CC) $(CFLAGS) $< -c
 
 %.o: %.c
 	$(CC) $(CFLAGS) $< -c
-
 
 all: ${NAME} ${NAME_BONUS}
 
