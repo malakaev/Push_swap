@@ -6,7 +6,7 @@
 #    By: kgolda <kgolda@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/11 21:15:13 by kgolda            #+#    #+#              #
-#    Updated: 2021/10/11 21:15:29 by kgolda           ###   ########.fr        #
+#    Updated: 2021/10/12 16:54:35 by kgolda           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,7 +44,7 @@ HEADER = push_swap.h
 
 CC = gcc
 
-CFLAGS = -g -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra
 
 RM = rm -f
 

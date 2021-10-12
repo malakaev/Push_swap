@@ -6,7 +6,7 @@
 /*   By: kgolda <kgolda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 18:10:34 by kgolda            #+#    #+#             */
-/*   Updated: 2021/10/11 20:38:51 by kgolda           ###   ########.fr       */
+/*   Updated: 2021/10/12 16:20:15 by kgolda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ void	ft_exit(int code, t_global *glb)
 void	ft_exit_2(t_global *glb)
 {
 	free(glb->head_a);
-	free(glb->head_b);
+	if (glb->size_b > 0)
+		free(glb->head_b);
 	free(glb->arr_sort);
 	free(glb->arr_argv);
 	free(glb);
@@ -56,16 +57,14 @@ void	ft_exit_free_stack(t_global *glb)
 	cur = glb->tail_a;
 	while (cur != NULL && cur != glb->head_a)
 	{
-		write(1, "ex1\n", 4);
 		tmp = cur;
 		cur = cur->prv;
 		free(tmp);
 		tmp = NULL;
 	}
 	cur = glb->tail_b;
-	while (cur != NULL && cur != glb->head_b)
+	while (cur != NULL && cur != glb->head_b && (glb->size_b > 0))
 	{
-		write(1, "ex2\n", 4);
 		tmp = cur;
 		cur = cur->prv;
 		free(tmp);
