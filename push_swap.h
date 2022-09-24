@@ -6,7 +6,7 @@
 /*   By: kgolda <kgolda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 19:46:15 by kgolda            #+#    #+#             */
-/*   Updated: 2021/10/11 21:13:49 by kgolda           ###   ########.fr       */
+/*   Updated: 2021/10/12 22:11:33 by kgolda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,6 @@ void		ft_scoring_main(t_global *glb);
 void		ft_stack_sort(t_global *glb);
 void		ft_glb_init(t_global *glb);
 
-//for bonus & gnl
 # define BUFFER_SIZE 10
 
 typedef struct s_buffer_index
@@ -94,7 +93,6 @@ typedef struct s_buffer_index
 	int		err;
 }			t_buf_ind;
 
-//gnl
 char		*ft_if_read_null(char *ex_buf, size_t *ex_size);
 t_buf_ind	ft_read_to_buf(char **line, int fd, t_buf_ind bfi, char **buf);
 t_buf_ind	ft_eof_freebuf(t_buf_ind bfi, char **buf, char **line, char *temp);
